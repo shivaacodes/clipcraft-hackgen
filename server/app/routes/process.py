@@ -595,11 +595,11 @@ async def process_cloudinary_video_pipeline(
                 processing_jobs[job_id].current_step = "generating_clips"
                 processing_jobs[job_id].progress = 95.0
                 
-                with profiler.profile("clip_generation", {"fast_mode": fast_mode, "max_clips": 3}):
+                with profiler.profile("clip_generation", {"fast_mode": fast_mode, "max_clips": 5}):
                     final_result = await clip_manager.generate_clips_from_pipeline_result(
                         final_result,
                         temp_video_path,
-                        max_clips=3,  # Increased to 3 for shorter clips
+                        max_clips=5,  # Increased to 5 for shorter clips
                         fast_mode=fast_mode
                     )
             

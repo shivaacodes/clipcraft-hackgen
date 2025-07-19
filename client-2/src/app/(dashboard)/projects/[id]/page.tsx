@@ -580,7 +580,7 @@ export default function ProjectPage() {
             console.log('Processing vibe analysis:', vibeAnalysis);
             
             if (vibeAnalysis && vibeAnalysis.top_clips && vibeAnalysis.top_clips.length > 0) {
-              const convertedClips = vibeAnalysis.top_clips.map((clip: any, index: number) => {
+              let convertedClips = vibeAnalysis.top_clips.map((clip: any, index: number) => {
                 console.log('Processing clip:', clip);
                 return {
                   id: clip.rank || index + 1,
@@ -596,7 +596,15 @@ export default function ProjectPage() {
                   scores: clip.scores || {}
                 };
               });
-              
+              // Enforce min 4, max 6 clips
+              convertedClips = convertedClips.slice(0, 6);
+              if (convertedClips.length < 4) {
+                alert('Could not generate enough clips. Please try with a different video or settings.');
+                setGeneratedClips([]);
+                setIsGenerating(false);
+                setShowStatusIndicator(false);
+                return;
+              }
               console.log('Converted clips:', convertedClips);
               setGeneratedClips(convertedClips);
             } else {

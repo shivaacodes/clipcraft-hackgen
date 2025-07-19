@@ -96,7 +96,7 @@ class ClipGenerator:
         duration = end_time - start_time
         
         # Validate clip duration (optimized for shorter clips)
-        if duration < 2 or duration > 15:  # 2 seconds to 15 seconds
+        if duration < 2 or duration > 60:  # 2 seconds to 60 seconds
             logger.warning(f"Invalid clip duration: {duration}s")
             return None
         
@@ -270,32 +270,26 @@ class ClipGenerationManager:
     async def generate_clips_from_pipeline_result(self, 
                                                 pipeline_result: Dict,
                                                 source_video_path: str,
-                                                max_clips: int = 2,
+                                                max_clips: int = 5,
                                                 fast_mode: bool = True) -> Dict:
         """
-        Generate clips from complete pipeline result.
-        Args:
-            pipeline_result: Complete result from video processing pipeline
-            source_video_path: Path to original video file
-            max_clips: Maximum clips to generate
-        Returns:
-            Updated pipeline result with generated clip file paths
+        Generate clips from complete pipeline result with robust fallback.
         """
         try:
-            vibe_analysis = pipeline_result.get('vibe_analysis', {})
+            vibe_analysis_data = pipeline_result.get('vibe_analysis', {}).get('vibe_analysis', {})
+            top_clips = vibe_analysis_data.get('top_clips', [])
             fallback_used = False
-            top_clips = []
-            # Fallback if no vibe_analysis or no top_clips
-            if not vibe_analysis or not vibe_analysis.get('vibe_analysis', {}).get('top_clips'):
-                logger.warning("No vibe analysis or top_clips found, using fallback evenly spaced clips.")
+
+            # --- Robust Fallback Logic ---
+            if not top_clips or len(top_clips) < max_clips:
+                logger.warning(f"Initial analysis found {len(top_clips)} clips, which is less than the required {max_clips}. Activating fallback.")
                 fallback_used = True
-                # Use transcription/chunks info to select evenly spaced highlights
                 transcription = pipeline_result.get('transcription', {})
                 chunks = transcription.get('chunks', [])
-                # Only use successful chunks with valid transcription
                 valid_chunks = [c for c in chunks if c.get('success') and c.get('transcription', {}).get('text')]
+
                 if not valid_chunks:
-                    logger.error("No valid chunks available for fallback clip generation.")
+                    logger.error("Fallback failed: No valid chunks available for clip generation.")
                     pipeline_result['generated_clips'] = {
                         'total_generated': 0,
                         'clips': [],
@@ -303,72 +297,59 @@ class ClipGenerationManager:
                         'error': 'No valid chunks for fallback clip generation.'
                     }
                     return pipeline_result
-                # Evenly spaced selection
+
+                # Select evenly spaced chunks to ensure we get enough clips
                 step = max(1, len(valid_chunks) // max_clips)
-                selected_chunks = [valid_chunks[i] for i in range(0, len(valid_chunks), step)][:max_clips]
-                # Build pseudo-top_clips for fallback
-                for c in selected_chunks:
-                    start_time = c.get('start_time', 0)
-                    end_time = c.get('end_time', 0)
+                selected_chunks = valid_chunks[::step][:max_clips]
+                
+                top_clips = []
+                for i, chunk in enumerate(selected_chunks):
+                    start_time = chunk.get('start_time', 0)
+                    end_time = chunk.get('end_time', 0)
                     top_clips.append({
                         'start_time': start_time,
                         'end_time': end_time,
-                        'title': f'Highlight {int(start_time)}s-{int(end_time)}s',
-                        'reason': 'Evenly spaced fallback highlight',
-                        'vibe': '',
-                        'scores': {},
+                        'title': f'Fallback Clip {i+1}',
+                        'reason': 'Fallback clip generated due to insufficient primary results.',
+                        'vibe': 'N/A',
+                        'scores': {'overall': 50}, # Default score
+                        'rank': i + 1,
                     })
-                # Wrap in fake vibe_analysis for downstream compatibility
-                vibe_analysis = {'vibe_analysis': {'top_clips': top_clips}}
-            # Generate actual video clips
+                
+                vibe_analysis_data['top_clips'] = top_clips
+
+            # --- Clip Generation ---
             generated_clips = await self.clip_generator.generate_clips_from_analysis(
-                source_video_path, vibe_analysis, max_clips, fast_mode
+                source_video_path, {'vibe_analysis': vibe_analysis_data}, max_clips, fast_mode
             )
-            # Update the pipeline result with generated clip info
+
+            # --- Final Formatting ---
             if generated_clips:
-                # Update top_clips with file paths
-                vibe_result = vibe_analysis.get('vibe_analysis', {})
-                top_clips = vibe_result.get('top_clips', [])
-                for i, generated_clip in enumerate(generated_clips):
-                    if i < len(top_clips):
-                        top_clips[i].update({
-                            'clip_file_path': generated_clip['file_path'],
-                            'clip_filename': generated_clip['filename'],
-                            'clip_url': generated_clip['url'],
-                            'clip_id': generated_clip['clip_id'],
-                            'file_size': generated_clip['file_size'],
-                            'thumbnail_url': generated_clip.get('thumbnail_url'),
-                            'thumbnail_filename': generated_clip.get('thumbnail_filename')
-                        })
-                # Add summary of generated clips
+                vibe_analysis_data['top_clips'] = [
+                    {
+                        'title': c.get('title', ''),
+                        'start_time': c.get('start_time', 0),
+                        'end_time': c.get('end_time', 0),
+                        'duration': c.get('duration', 0),
+                        'clip_url': c.get('url', ''),
+                        'thumbnail_url': c.get('thumbnail_url', ''),
+                        'scores': c.get('scores', {}),
+                        'reason': c.get('reason', ''),
+                        'vibe': c.get('vibe', ''),
+                        'rank': i + 1,
+                        'clip_filename': c.get('filename', ''),
+                        'thumbnail_filename': c.get('thumbnail_filename', ''),
+                        'file_size': c.get('file_size', None)
+                    }
+                    for i, c in enumerate(generated_clips)
+                ]
+                
                 pipeline_result['generated_clips'] = {
                     'total_generated': len(generated_clips),
                     'clips': generated_clips,
-                    'status': 'success' if not fallback_used else 'fallback',
-                    'message': 'Fallback used: evenly spaced highlights.' if fallback_used else 'success'
+                    'status': 'fallback' if fallback_used else 'success',
+                    'message': 'Clips generated successfully.'
                 }
-                # --- FIX: Also assign fallback clips to top_clips for frontend ---
-                if fallback_used:
-                    # If top_clips is empty or missing, set it to generated_clips
-                    if 'vibe_analysis' in pipeline_result and 'vibe_analysis' in pipeline_result['vibe_analysis']:
-                        pipeline_result['vibe_analysis']['vibe_analysis']['top_clips'] = [
-                            {
-                                'title': c.get('title', ''),
-                                'start_time': c.get('start_time', 0),
-                                'end_time': c.get('end_time', 0),
-                                'duration': c.get('duration', 0),
-                                'clip_url': c.get('url', c.get('clip_url', '')),
-                                'thumbnail_url': c.get('thumbnail_url', ''),
-                                'scores': c.get('scores', {}),
-                                'reason': c.get('reason', ''),
-                                'vibe': c.get('vibe', ''),
-                                'rank': c.get('rank', None),
-                                'clip_filename': c.get('filename', ''),
-                                'thumbnail_filename': c.get('thumbnail_filename', ''),
-                                'file_size': c.get('file_size', None)
-                            }
-                            for c in generated_clips
-                        ]
             else:
                 pipeline_result['generated_clips'] = {
                     'total_generated': 0,
@@ -376,9 +357,12 @@ class ClipGenerationManager:
                     'status': 'no_clips_generated',
                     'message': 'No clips could be generated from the analysis or fallback.'
                 }
+            
+            pipeline_result['vibe_analysis']['vibe_analysis'] = vibe_analysis_data
             return pipeline_result
+
         except Exception as e:
-            logger.error(f"Error in clip generation workflow: {e}")
+            logger.error(f"Error in clip generation workflow: {e}", exc_info=True)
             pipeline_result['generated_clips'] = {
                 'total_generated': 0,
                 'clips': [],

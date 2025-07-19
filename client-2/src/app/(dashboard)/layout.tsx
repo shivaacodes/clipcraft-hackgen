@@ -2,7 +2,7 @@ import ThemeToggler from "@/components/theme/toggler";
 import { Button } from "@/components/ui/button";
 import { UserProfile } from "@/components/user-profile";
 import { siteConfig } from "@/config/site.config";
-import { Plus, FolderOpen, BarChart2, CreditCard, Layout, Settings, Users, Search } from "lucide-react";
+import { Plus, FolderOpen, BarChart2, CreditCard, Layout, Settings, Users, Search, Camera } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardLayout({
@@ -72,7 +72,14 @@ const MockSidebar = () => {
         <Button variant="ghost" className="border-dashed h-14 text-left justify-start pl-8" asChild>
           <Link href="/find">
             <Search />
-            <span>Find</span>
+            <span>Find using text</span>
+          </Link>
+        </Button>
+        {/* New: Find by Image */}
+        <Button variant="ghost" className="border-dashed h-14 text-left justify-start pl-8" asChild>
+          <Link href="/find-by-image">
+            <Camera />
+            <span>Find using image</span>
           </Link>
         </Button>
       </div>

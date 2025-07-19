@@ -35,10 +35,10 @@ async def generate_video_from_image(image_path: str, output_path: str, duration:
 
 async def generate_video_from_text(text: str, output_path: str, duration: int = 3, resolution: str = "1280x720"):
     # Use Inter.ttf from titan/public/fonts/
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
     # Escape comma in font filename for ffmpeg
     font_filename = 'Inter-VariableFont_opsz,wght.ttf'.replace(',', '\\,')
-    font_path = os.path.join(project_root, 'titan', 'public', 'fonts', font_filename)
+    font_path = os.path.join(project_root, 'client-2', 'public', 'fonts', font_filename)
     safe_text = text.replace(':', '\\:').replace("'", "\\'")
     cmd = [
         "ffmpeg", "-y",

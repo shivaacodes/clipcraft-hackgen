@@ -84,10 +84,10 @@ class SimpleVibeAnalyzer:
             len(chunk.get('transcription', {}).get('text', '')) > 4
         ]
         
-        # LIMIT TO FIRST 3 CHUNKS TO SAVE CREDITS
-        if len(valid_chunks) > 3:
-            logger.info(f"Limiting analysis to first 3 chunks (out of {len(valid_chunks)}) to save API credits")
-            valid_chunks = valid_chunks[:3]
+        # LIMIT TO FIRST 10 CHUNKS TO SAVE CREDITS
+        if len(valid_chunks) > 10:
+            logger.info(f"Limiting analysis to first 10 chunks (out of {len(valid_chunks)}) to save API credits")
+            valid_chunks = valid_chunks[:10]
         
         if not valid_chunks:
             return self._empty_result()
@@ -239,7 +239,7 @@ Respond in this exact JSON format:
         # Filter out chunks without analysis
         valid_chunks = [
             chunk for chunk in analyzed_chunks 
-            if chunk.get('analysis') and chunk['analysis'].get('overall_score', 0) > 30
+            if chunk.get('analysis') and chunk['analysis'].get('overall_score', 0) > 15
         ]
         
         # Sort by overall score (descending)
@@ -326,9 +326,9 @@ class GeminiVibeAnalyzer:
             chunk for chunk in chunks
             if chunk.get('success') and chunk.get('transcription', {}).get('text', '').strip() and len(chunk.get('transcription', {}).get('text', '')) > 4
         ]
-        if len(valid_chunks) > 3:
-            logger.info(f"Limiting analysis to first 3 chunks (out of {len(valid_chunks)}) to save API credits")
-            valid_chunks = valid_chunks[:3]
+        if len(valid_chunks) > 10:
+            logger.info(f"Limiting analysis to first 10 chunks (out of {len(valid_chunks)}) to save API credits")
+            valid_chunks = valid_chunks[:10]
         if not valid_chunks:
             return self._empty_result()
         analyzed_chunks = await self._analyze_chunks_for_vibe(valid_chunks, selected_vibe, selected_age_group)
@@ -459,7 +459,7 @@ Respond in this exact JSON format:
     def _rank_clips(self, analyzed_chunks: List[Dict], target_vibe: str, target_age_group: str) -> List[Dict]:
         valid_chunks = [
             chunk for chunk in analyzed_chunks
-            if chunk.get('analysis') and chunk['analysis'].get('overall_score', 0) > 30
+            if chunk.get('analysis') and chunk['analysis'].get('overall_score', 0) > 15
         ]
         valid_chunks.sort(key=lambda x: x.get('analysis', {}).get('overall_score', 0), reverse=True)
         ranked_clips = []

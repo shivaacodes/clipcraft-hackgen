@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Upload, Scissors, Users, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface TopActionRowProps {
   fileInputRef: React.RefObject<HTMLInputElement>;
@@ -65,44 +66,77 @@ export default function TopActionRow({
               <DialogTitle className="text-xl font-semibold">Choose Your Vibe</DialogTitle>
               <p className="text-sm text-muted-foreground">Select one vibe for your video</p>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <div className="grid grid-cols-3 gap-4">
-                  {vibes.map((v) => {
-                    const isSelected = selectedVibe === v.value;
-                    const color = vibeColors[v.value] || { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20" };
-                    return (
-                      <div key={v.value} className="flex flex-col items-center gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedVibe(isSelected ? "" : v.value);
-                          }}
-                          className={`relative w-16 h-16 text-3xl flex items-center justify-center rounded-full border-2 transition-all duration-200 ${
-                            isSelected
-                              ? `${color.border} ${color.bg} shadow-lg scale-110`
-                              : "border-muted hover:border-muted-foreground/50 hover:bg-muted/50 hover:scale-105"
-                          }`}
-                        >
-                          <span className={color.text}>{v.label}</span>
-                          {isSelected && (
-                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                              <span className="text-sm text-primary-foreground">✓</span>
-                            </div>
-                          )}
-                        </button>
-                        <span className="text-sm text-muted-foreground font-medium capitalize">{v.value}</span>
+            {/* --- Custom Vibe Cards --- */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
+              {[
+                {
+                  key: "romantic",
+                  emoji: "💖",
+                  title: "Lovely-Dovey",
+                  description: "All the feels! Sweet, romantic, and heart-melting moments that make you believe in love.",
+                  image: "/assets/bg/lovely-dovey.jpeg",
+                },
+                {
+                  key: "funny",
+                  emoji: "🤣",
+                  title: "LOL Moments",
+                  description: "Get ready to giggle! Outrageous, silly, and laugh-out-loud scenes for instant mood-lift.",
+                  image: "/assets/bg/lol-moments.jpeg",
+                },
+                {
+                  key: "thriller",
+                  emoji: "😱",
+                  title: "Edge of Your Seat",
+                  description: "Hold your breath! Suspenseful, intense, and jaw-dropping moments that keep you guessing.",
+                  image: "/assets/bg/edge-of-seat.jpeg",
+                },
+                {
+                  key: "heartbreak",
+                  emoji: "💔😭",
+                  title: "Tearjerker",
+                  description: "Grab the tissues! Emotional, powerful, and soul-stirring scenes that tug at your heartstrings.",
+                  image: "/assets/bg/heartbreak.jpeg",
+                },
+              ].map((vibe) => {
+                const isSelected = selectedVibe === vibe.key;
+                return (
+                  <motion.div
+                    key={vibe.key}
+                    whileHover={{ scale: 1.025, boxShadow: "0 4px 24px 0 rgba(0,0,0,0.10)" }}
+                    transition={{ type: "spring", stiffness: 250, damping: 22 }}
+                    className={`relative bg-background border shadow-sm overflow-hidden group transition-all duration-300 min-h-[250px] flex flex-col justify-between cursor-pointer 
+                      ${isSelected ? 'border-primary/80 border-2' : 'border-[#2d2d2f] border'} 
+                      ${!isSelected && 'hover:border-primary/60'}`}
+                    onClick={() => {
+                      setSelectedVibe(isSelected ? "" : vibe.key);
+                      setOpen(false);
+                    }}
+                  >
+                    <div className="w-full h-40 bg-cover bg-center" style={{ backgroundImage: `url(${vibe.image})` }} />
+                    <div className="p-5 flex flex-col gap-3 flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-2xl md:text-3xl mr-2 select-none" aria-label={vibe.title}>{vibe.emoji}</span>
+                        <h3 className="font-semibold text-lg tracking-tight text-zinc-900 dark:text-zinc-100 flex-1">{vibe.title}</h3>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="pt-2 flex justify-between items-center">
-                <div className="text-sm text-muted-foreground">
-                  {selectedVibe ? `${selectedVibe} vibe selected` : 'No vibe selected'}
-                </div>
-                <Button onClick={() => setOpen(false)}>Done</Button>
-              </div>
+                      {/* Description only in overlay below */}
+                      {/* <p className="text-sm text-muted-foreground leading-snug">{vibe.description}</p> */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        whileHover={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 24 }}
+                        transition={{ duration: 0.55, ease: "easeInOut" }}
+                        className="absolute left-0 right-0 bottom-0 p-5 bg-black/80 text-base text-white opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto z-10 shadow-xl backdrop-blur-md"
+                      >
+                        {vibe.description}
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
+            {/* --- End Custom Vibe Cards --- */}
+            {/* <div className="space-y-4"> ...old vibe grid... </div> */}
+            {/* <div className="pt-2 flex justify-between items-center"> ...old footer... </div> */}
           </DialogContent>
         </Dialog>
 

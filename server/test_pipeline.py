@@ -14,12 +14,12 @@ def test_complete_pipeline():
     base_url = "http://localhost:8000"
     
     # Test video file path (use direct file path for testing)
-    test_video_path = "../public/uploads/videos/OkSHqqc0PteGbus5CaNVdB4iYEUtQ5gu_1751951306681.mp4"
+    video_path = os.path.join(os.path.dirname(__file__), "../client-2/public/test/adolasence-teaser.mp4")
     
     print("🎬 Testing complete video processing pipeline...")
-    print(f"📹 Video file: {test_video_path}")
+    print(f"📹 Video file: {video_path}")
     
-    if not os.path.exists(test_video_path):
+    if not os.path.exists(video_path):
         print(f"❌ Video file not found: {test_video_path}")
         return False
     
@@ -27,7 +27,7 @@ def test_complete_pipeline():
     print("🚀 Starting video processing...")
     
     # Prepare multipart form data
-    with open(test_video_path, 'rb') as video_file:
+    with open(video_path, 'rb') as video_file:
         files = {'file': ('test_video.mp4', video_file, 'video/mp4')}
         
         data = {
@@ -121,7 +121,8 @@ def test_complete_pipeline():
                 return True
             else:
                 print(f"❌ Failed to get results: {result_response.status_code}")
-                return False
+            print(f"Response: {result_response.text}")
+            return False
                 
         elif status == "failed":
             error = status_data.get("error", "Unknown error")
