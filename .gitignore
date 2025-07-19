@@ -1,4 +1,4 @@
 .env
 
-./server/generated_clips
-./server/rendered_videos
+server/generated_clips
+server/rendered_videos
