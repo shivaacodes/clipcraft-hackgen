@@ -15,3 +15,5 @@ pillow                    # optional, if working with thumbnails
 moviepy                   # better video processing
 numpy                     # for audio/video processing
 soundfile
+opencv
+face_recognition
