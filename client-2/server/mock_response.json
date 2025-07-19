@@ -1,0 +1,143 @@
+{
+  "transcription": {
+    "merged_transcription": {
+      "text": "This is a test video with happy and engaging content. There are several interesting moments that could make great clips.",
+      "confidence": 0.85
+    }
+  },
+  "vibe_analysis": {
+    "vibe_analysis": {
+      "selected_vibe": "Happy",
+      "selected_age_group": "young-adults",
+      "clips_found": 6,
+      "top_clips": [
+        {
+          "title": "Happy Clip 1",
+          "start_time": 5.0,
+          "end_time": 15.0,
+          "duration": 10.0,
+          "vibe": "Happy",
+          "rank": 1,
+          "scores": {
+            "overall": 85,
+            "vibe_match": 90,
+            "age_group_match": 80,
+            "clip_potential": 85
+          },
+          "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+          "clip_url": "/api/v1/process/clips/clip_1_d2a1b966_5s-15s.mp4",
+          "thumbnail_url": "/api/v1/process/clips/thumb_1_d2a1b966_5s.jpg",
+          "clip_filename": "clip_1_d2a1b966_5s-15s.mp4",
+          "thumbnail_filename": "thumb_1_d2a1b966_5s.jpg",
+          "file_size": 1425225
+        },
+        {
+          "title": "Happy Clip 2",
+          "start_time": 25.0,
+          "end_time": 35.0,
+          "duration": 10.0,
+          "vibe": "Happy",
+          "rank": 2,
+          "scores": {
+            "overall": 80,
+            "vibe_match": 85,
+            "age_group_match": 75,
+            "clip_potential": 80
+          },
+          "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+          "clip_url": "/api/v1/process/clips/clip_1_50cd6334_120s-140s.mp4",
+          "thumbnail_url": "/api/v1/process/clips/thumb_1_50cd6334_120s.jpg",
+          "clip_filename": "clip_1_50cd6334_120s-140s.mp4",
+          "thumbnail_filename": "thumb_1_50cd6334_120s.jpg",
+          "file_size": 2909289
+        },
+        {
+          "title": "Happy Clip 3",
+          "start_time": 45.0,
+          "end_time": 55.0,
+          "duration": 10.0,
+          "vibe": "Happy",
+          "rank": 3,
+          "scores": {
+            "overall": 75,
+            "vibe_match": 80,
+            "age_group_match": 70,
+            "clip_potential": 75
+          },
+          "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+          "clip_url": "/api/v1/process/clips/clip_2_552a4684_25s-35s.mp4",
+          "thumbnail_url": "/api/v1/process/clips/thumb_2_552a4684_25s.jpg",
+          "clip_filename": "clip_2_552a4684_25s-35s.mp4",
+          "thumbnail_filename": "thumb_2_552a4684_25s.jpg",
+          "file_size": 1264064
+        }
+      ]
+    }
+  },
+  "generated_clips": {
+    "total_generated": 6,
+    "clips": [
+      {
+        "title": "Happy Clip 1",
+        "start_time": 5.0,
+        "end_time": 15.0,
+        "duration": 10.0,
+        "vibe": "Happy",
+        "rank": 1,
+        "scores": {
+          "overall": 85,
+          "vibe_match": 90,
+          "age_group_match": 80,
+          "clip_potential": 85
+        },
+        "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+        "clip_url": "/api/v1/process/clips/clip_1_d2a1b966_5s-15s.mp4",
+        "thumbnail_url": "/api/v1/process/clips/thumb_1_d2a1b966_5s.jpg",
+        "clip_filename": "clip_1_d2a1b966_5s-15s.mp4",
+        "thumbnail_filename": "thumb_1_d2a1b966_5s.jpg",
+        "file_size": 1425225
+      },
+      {
+        "title": "Happy Clip 2",
+        "start_time": 25.0,
+        "end_time": 35.0,
+        "duration": 10.0,
+        "vibe": "Happy",
+        "rank": 2,
+        "scores": {
+          "overall": 80,
+          "vibe_match": 85,
+          "age_group_match": 75,
+          "clip_potential": 80
+        },
+        "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+        "clip_url": "/api/v1/process/clips/clip_1_50cd6334_120s-140s.mp4",
+        "thumbnail_url": "/api/v1/process/clips/thumb_1_50cd6334_120s.jpg",
+        "clip_filename": "clip_1_50cd6334_120s-140s.mp4",
+        "thumbnail_filename": "thumb_1_50cd6334_120s.jpg",
+        "file_size": 2909289
+      },
+      {
+        "title": "Happy Clip 3",
+        "start_time": 45.0,
+        "end_time": 55.0,
+        "duration": 10.0,
+        "vibe": "Happy",
+        "rank": 3,
+        "scores": {
+          "overall": 75,
+          "vibe_match": 80,
+          "age_group_match": 70,
+          "clip_potential": 75
+        },
+        "reason": "This segment has positive energy and engaging content suitable for happy vibes.",
+        "clip_url": "/api/v1/process/clips/clip_2_552a4684_25s-35s.mp4",
+        "thumbnail_url": "/api/v1/process/clips/thumb_2_552a4684_25s.jpg",
+        "clip_filename": "clip_2_552a4684_25s-35s.mp4",
+        "thumbnail_filename": "thumb_2_552a4684_25s.jpg",
+        "file_size": 1264064
+      }
+    ],
+    "status": "success"
+  }
+}
