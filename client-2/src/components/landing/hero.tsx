@@ -26,6 +26,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-tight text-white"
+            style={{ fontFamily: 'var(--font-bricolage)' }}
           >
             Every story has many faces
           </motion.p>
@@ -36,7 +37,10 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-2 flex flex-wrap justify-center items-center gap-x-1 xl:gap-x-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold"
           >
-            <p className="text-transparent bg-gradient-to-b from-gray-400 via-gray-200 to-white bg-clip-text">
+            <p 
+              className="text-transparent bg-gradient-to-b from-gray-400 via-gray-200 to-white bg-clip-text"
+              style={{ fontFamily: 'var(--font-bricolage)' }}
+            >
               We help you show the right one
             </p>
           </motion.div>

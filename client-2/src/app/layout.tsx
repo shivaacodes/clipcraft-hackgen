@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, JetBrains_Mono, Inter } from "next/font/google";
+import { Manrope, JetBrains_Mono, Inter, Bricolage_Grotesque } from "next/font/google";
 import "@/styles/globals.css";
 import { siteConfig } from "@/config/site.config";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,11 @@ const fontMono = JetBrains_Mono({
 
 const fontHeading = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const bricolage_grotesque = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
 });
 
@@ -69,7 +74,8 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
           fontHeading.variable,
-          fontMono.variable
+          fontMono.variable,
+          bricolage_grotesque.variable
         )}
       >
         <RootProviders>

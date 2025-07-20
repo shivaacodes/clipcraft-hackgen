@@ -35,6 +35,10 @@ class FrameReader:
         """The main loop for the reading thread. Reads frames and puts them into the queue."""
         while not self.stopped:
             if not self.q.full():
+                if self.cap is None or not self.cap.isOpened():
+                    # VideoCapture not initialized or failed to open
+                    self.stopped = True
+                    break
                 ret, frame = self.cap.read()
                 if not ret:
                     # End of video or error reading frame

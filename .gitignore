@@ -2,3 +2,5 @@
 
 server/generated_clips
 server/rendered_videos
+server/public/extracted_clips/*
+server/app/routes/public/*
